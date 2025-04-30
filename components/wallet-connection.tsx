@@ -82,9 +82,9 @@ export default function WalletConnection({ isConnected, setIsConnected }: Wallet
           <div className="bg-gray-900 rounded-r-md px-3 py-2 text-sm font-mono">{mainnetBalance} XLM</div>
         </div> */}
 
-        <div className="flex items-center">
+{/*        <div className="flex items-center">
           <div className="bg-gray-700 rounded-l-md px-3 py-2 text-sm text-gray-400" onClick={async()=>await mint()}>dasdada</div>
-       </div>
+       </div> */}
 
 
                 <Link href="/marketplace/create">
