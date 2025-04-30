@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 import { usePrivy } from "@privy-io/react-auth"
+import WalletConnection from "./wallet-connection"
+import { useProjectStore } from "@/store/useProjectStore"
 
 export function MainNav() {
   const pathname = usePathname()
@@ -66,6 +68,9 @@ export function MainNav() {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [isProfileDropdownOpen, authenticated, ready])
+
+
+const {isWalletConnected, setIsWalletConnected} = useProjectStore();
 
   return (
     <Navbar>
@@ -210,12 +215,13 @@ export function MainNav() {
             <>
               {/* Unauthenticated Actions */}
               <ThemeToggle />
-              <Button
-                className="rounded-full z-20 text-white bg-gradient-to-r from-[#6C63FF] to-[#5D51FF] dark:from-[#8075FF] dark:to-[#6C63FF] hover:from-[#5D51FF] hover:to-[#6C63FF]"
-                onClick={handleLogin}
+              {/* bg-gradient-to-r */}
+              <div
+                className="rounded-full z-20 text-white  from-[#6C63FF] to-[#5D51FF] dark:from-[#8075FF] dark:to-[#6C63FF] hover:from-[#5D51FF] hover:to-[#6C63FF]"
+                // onClick={handleLogin}
               >
-                Get Started
-              </Button>
+            <WalletConnection isConnected={isWalletConnected} setIsConnected={setIsWalletConnected} />
+            </div>
             </>
           )}
         </div>
@@ -346,8 +352,8 @@ export function MainNav() {
                 variant="primary"
                 className="w-full"
               >
-                Get Started
-              </NavbarButton>
+            <WalletConnection isConnected={isWalletConnected} setIsConnected={setIsWalletConnected} />
+            </NavbarButton>
             </div>
           )}
         </MobileNavMenu>
