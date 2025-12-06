@@ -12,7 +12,7 @@ import { ProfileFavorites } from "@/components/profile/profile-favorites"
 import { ProfileAbout } from "@/components/profile/profile-about"
 import { ProfileSettings } from "@/components/profile/profile-settings"
 import { cn } from "@/lib/utils"
-import { usePrivy, useWallets } from "@privy-io/react-auth"
+// import { usePrivy, useWallets } from "@privy-io/react-auth"
 
 // Mock user data
 const userData = {
@@ -36,9 +36,9 @@ export function ProfilePage() {
   const [activeTab, setActiveTab] = useState("collection")
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const {user} = usePrivy();
-  const {wallets} = useWallets();
-  console.log("user", user?.createdAt.getMonth())
+  // const {user} = usePrivy();
+  // const {wallets} = useWallets();
+  // console.log("user", user?.createdAt.getMonth())
 
   // Handle scroll events to adjust header
   const handleScroll = () => {
@@ -56,14 +56,14 @@ export function ProfilePage() {
   }
 
   // Check if user and createdAt exist before formatting the date
-  const joinDateString = user?.createdAt 
-    ? `Member Since ${getMonthName(user.createdAt.getUTCMonth())} ${user.createdAt.getFullYear()}` 
-    : "Loading join date..."; // Or some placeholder
+  // const joinDateString = user?.createdAt 
+  //   ? `Member Since ${getMonthName(user.createdAt.getUTCMonth())} ${user.createdAt.getFullYear()}` 
+  //   : "Loading join date..."; // Or some placeholder
 
-  // Check if wallets array has at least one wallet before accessing it
-  const displayAddress = wallets && wallets.length > 0 
-    ? `${wallets[0].address.slice(0, 4)}...${wallets[0].address.slice(-4)}` 
-    : "Loading address..."; // Or some placeholder
+  // // Check if wallets array has at least one wallet before accessing it
+  // const displayAddress = wallets && wallets.length > 0 
+  //   ? `${wallets[0].address.slice(0, 4)}...${wallets[0].address.slice(-4)}` 
+  //   : "Loading address..."; // Or some placeholder
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-white dark:bg-[#131525] relative overflow-hidden">
@@ -91,7 +91,7 @@ export function ProfilePage() {
             transition={{ repeat: Number.POSITIVE_INFINITY, duration: 6, ease: "easeInOut" }}
           >
             <Image
-              src={`https://api.dicebear.com/9.x/notionists/svg?seed=${user?.id}`}
+              src={`https://api.dicebear.com/9.x/notionists/svg?seed=${userData.location}`}
               alt={userData.username}
               fill
               className="object-cover"
@@ -102,7 +102,7 @@ export function ProfilePage() {
           {/* Profile Info */}
           <div className="flex flex-col items-center md:items-start">
             <div className="flex items-center gap-2 mb-1">
-              <h1 className="text-[28px] font-bold text-[#121F3D] dark:text-white">{user?.google?.name}</h1>
+              <h1 className="text-[28px] font-bold text-[#121F3D] dark:text-white">{userData.username}</h1>
               {userData.verified && (
                 <div className="bg-[#6C63FF] dark:bg-[#8075FF] rounded-full p-0.5">
                   <Check className="h-4 w-4 text-white" />
@@ -110,7 +110,7 @@ export function ProfilePage() {
               )}
             </div>
             <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4 text-[14px] text-[#121F3D]/70 dark:text-[#B6B8CF] mb-4">
-              <span>{joinDateString}</span>
+              <span>{userData.joinDate}</span>
               <span className="hidden md:inline">•</span>
               <span>{userData.location}</span>
             </div>
@@ -138,7 +138,7 @@ export function ProfilePage() {
               variant="outline"
               className="rounded-full border-[#E4E1FF] dark:border-[#352F7E] text-[#121F3D]/70 dark:text-[#B6B8CF] hover:bg-[#F9F9FB] dark:hover:bg-[#1A1C36]"
             >
-              {displayAddress}
+              {userData.location}
               <ExternalLink className="ml-2 h-3 w-3" />
             </Button>
             <Button
