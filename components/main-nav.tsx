@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
+// import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
@@ -21,7 +21,7 @@ import { Plus, Search, Bell, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
-import { usePrivy } from "@privy-io/react-auth"
+// import { usePrivy } from "@privy-io/react-auth"
 import WalletConnection from "./wallet-connection"
 import { useProjectStore } from "@/store/useProjectStore"
 
@@ -41,9 +41,9 @@ export function MainNav() {
 
   // This would be replaced with actual authentication logic
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const {login, authenticated, ready, user} = usePrivy()
+  // const {login, authenticated, ready, user} = usePrivy()
   // Toggle authentication for demo purposes
-  const handleLogin = () => login({loginMethods: ["google", "email"]})
+  // const handleLogin = () => login({loginMethods: ["google", "email"]})
 
   const handleLogout = () => {
     setIsAuthenticated(false)
@@ -57,9 +57,9 @@ export function MainNav() {
         setIsProfileDropdownOpen(false)
       }
     }
-    if (authenticated && ready ){
-       setIsAuthenticated(true)
-    }
+    // if (authenticated && ready ){
+    //    setIsAuthenticated(true)
+    // }
     if (isProfileDropdownOpen) {
       document.addEventListener("mousedown", handleClickOutside)
     }
@@ -67,7 +67,7 @@ export function MainNav() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [isProfileDropdownOpen, authenticated, ready])
+  }, [isProfileDropdownOpen])
 
 
 const {isWalletConnected, setIsWalletConnected} = useProjectStore();
@@ -165,8 +165,8 @@ const {isWalletConnected, setIsWalletConnected} = useProjectStore();
                 <Bell className="h-5 w-5 text-[#121F3D] dark:text-[#E0E0E0]" />
                 <span className="absolute top-0 right-0 h-2 w-2 bg-[#FF6B6B] dark:bg-[#FF7E7E] rounded-full"></span>
               </Button> */}
-              <div className="relative">
-                <button
+              {/* <div className="relative"> */}
+                {/* <button
                   className="h-9 w-9 rounded-full overflow-hidden border-2 border-white dark:border-[#1A1C36] focus:outline-none focus:ring-2 focus:ring-[#6C63FF] dark:focus:ring-[#8075FF]"
                   onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                 >
@@ -178,9 +178,9 @@ const {isWalletConnected, setIsWalletConnected} = useProjectStore();
                       className="object-cover"
                     />
                   
-                </button>
+                </button> */}
 
-                {isProfileDropdownOpen && (
+                {/* {isProfileDropdownOpen && (
                   <div
                     id="profile-dropdown"
                     className="absolute right-0 mt-2 w-48 rounded-xl bg-white dark:bg-[#1A1A1A] shadow-lg border border-[#E4E1FF] dark:border-[#2A2A2A] p-2 z-20"
@@ -208,8 +208,8 @@ const {isWalletConnected, setIsWalletConnected} = useProjectStore();
                       Logout
                     </button>
                   </div>
-                )}
-              </div>
+                )} */}
+              {/* </div> */}
             </>
           ) : (
             <>

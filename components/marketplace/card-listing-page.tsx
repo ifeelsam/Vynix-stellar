@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useRef } from "react"
 import Image from "next/image"
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from "framer-motion"
 import { Upload, Camera, X, Check, Edit, Info, Sparkles, Clock, DollarSign, Tag, BarChart3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,9 +14,19 @@ import { Slider } from "@/components/ui/slider"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useProjectStore } from "@/store/useProjectStore"
+import { useListedCardsStore, type ListedCard } from "@/components/store/useListedCardsStore"
 
 // Mock data for card sets
 const cardSets = [
@@ -53,6 +64,11 @@ const blockchains = [
   { id: "flow", name: "Flow" },
 ]
 
+
+interface WalletConnectionProps {
+  isConnected: boolean
+  setIsConnected: (connected: boolean) => void
+}
 export function CardListingPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
@@ -62,8 +78,11 @@ export function CardListingPage() {
   const [extractedData, setExtractedData] = useState<any>(null)
   const [isEditing, setIsEditing] = useState<string | null>(null)
   const [confidence, setConfidence] = useState(0)
-
+  const [isSuccessDialogOpen, setIsSuccessDialogOpen] = useState(false)
+  const {mint} = useProjectStore()
+  const { addListedCard } = useListedCardsStore()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   // Handle file upload
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -265,10 +284,43 @@ export function CardListingPage() {
   }
 
   // Handle submit listing
-  const handleSubmitListing = () => {
-    // In a real app, this would submit the listing to the backend
-    alert("Card successfully listed!")
-  }
+  const handleSubmitListing = async() => {
+    // **TODO**: Replace mock data with actual data from form state/extractedData
+    // This requires gathering the selected price, listing type, duration, blockchain, etc.
+    // from the form elements in Step 3.
+    const listingData: Omit<ListedCard, 'id' | 'listTimestamp'> = {
+      name: extractedData?.name || "Unknown Card",
+      set: extractedData?.set || "Unknown Set",
+      number: extractedData?.number || "???",
+      rarity: extractedData?.rarity || "Unknown",
+      condition: extractedData?.condition || "Unknown",
+      grade: extractedData?.grade || "Ungraded",
+      isFirstEdition: extractedData?.isFirstEdition || false,
+      isHolographic: extractedData?.isHolographic || false,
+      imageUrl: uploadedImage || "/charizard-holo-card.png",
+      price: 12500, // Example fixed price
+      listingType: 'fixed-price', // Example, read from Tabs state
+      blockchain: 'ethereum', // Example, read from Select state
+      royalties: 5, // Example, read from Slider state
+      includesPhysical: true, // Example, read from Switch state
+      description: "", // Example, read from Textarea state
+    };
+
+    addListedCard(listingData);
+
+    // Optional: Add minting logic here if needed
+    await mint();
+
+    setIsSuccessDialogOpen(true);
+  };
+
+  const handleNavigateToMarketplace = () => {
+    setIsSuccessDialogOpen(false);
+    setCurrentStep(1);
+    setUploadedImage(null);
+    setExtractedData(null);
+    router.push('/marketplace');
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-gradient-to-br from-[#F8F9FF] to-[#E4E1FF]/50 dark:from-[#0A0A0A] dark:to-[#121212] relative overflow-hidden">
@@ -940,6 +992,29 @@ export function CardListingPage() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Success Dialog */}
+      <Dialog open={isSuccessDialogOpen} onOpenChange={setIsSuccessDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-white/90 dark:bg-[#131525]/90 backdrop-blur-md border-[#E4E1FF] dark:border-[#352F7E]/30">
+          <DialogHeader>
+            <DialogTitle className="text-[#121F3D] dark:text-white flex items-center">
+              <Check className="h-6 w-6 text-green-500 mr-2 rounded-full bg-green-500/10 p-1" />
+              Listing Successful!
+            </DialogTitle>
+            <DialogDescription className="text-[#121F3D]/70 dark:text-[#B6B8CF]">
+              Your card has been successfully listed on the marketplace.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              onClick={handleNavigateToMarketplace}
+              className="rounded-full bg-gradient-to-r from-[#8075FF] to-[#6C63FF] hover:from-[#6C63FF] hover:to-[#5D51FF] text-[#121F3D] dark:text-white"
+            >
+              Go to Marketplace
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
